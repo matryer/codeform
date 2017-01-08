@@ -1,0 +1,52 @@
+{{ define "layout" }}
+<html>
+<head>
+	<title>{{ template "title" }}</title>
+	<link rel='stylesheet' href='/static/lib/semantic.min.css'>
+	<link rel='stylesheet' href='/static/css/app.css'>
+</head>
+<body>
+	<div class='page'>
+		<header>
+			<div class='ui container'>
+				<div class="ui text menu">
+					<div class="active item">
+						Codeform
+					</div>
+					<div class="right menu">
+						<a href='https://github.com/matryer/codeform' target='_blank' class="item">
+							Github
+						</a>
+						<a href='https://github.com/matryer/codeform-templates' target='_blank' class="item">
+							Browse templates
+						</a>
+						<div class="item">
+							<div class="ui icon input">
+								<input type="text" placeholder="Search templates">
+								<i class="search link icon"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class='content'>
+			{{ template "content" . }}
+		</div>
+		<footer>
+			v{{ .Version }} - Copyright &copy;2017 <a href='https://github.com/matryer/codeform/graphs/contributors' target='_blank'>Codeform contributors</a>
+		</footer>
+	</div>
+	<script src='/static/lib/jquery-3.1.1.min.js'></script>
+	<script src='/static/lib/semantic.min.js'></script>
+	<script src='/static/lib/riot+compiler.v3.0.5.min.js'></script>
+	<script src='/static/lib/clipboard.v1.5.16.min.js'></script>
+	<script src='/static/js/app.js'></script>
+	{{ template "scripts" }}
+	<script src='/static/js/init.js'></script>
+</body>
+</html>
+{{ end }}
+{{ define "content" }}{{ end }}
+{{ define "title" }}{{ end }}
+{{ define "scripts" }}{{ end }}
