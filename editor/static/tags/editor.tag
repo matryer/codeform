@@ -23,11 +23,9 @@
 		}
 	</style>
 	<div class='template'>
-		<h3>Template</h3>
 		<codebox ref='templatebox' placeholder="Template" class='box'></codebox>
 	</div>
 	<div class='preview'>
-		<h3>Preview</h3>
 		<div class="ui source accordion">
 			<div class="title">
 			<i class="dropdown icon"></i>
