@@ -1,0 +1,3 @@
+package pkgname
+
+func init() {}
