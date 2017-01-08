@@ -1,0 +1,32 @@
+.page {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	flex-wrap: nowrap;
+	height: 100%;
+}
+.page > * {
+	margin: 10px;
+}
+header {
+	order: 1;
+}
+.content {
+	order: 50;
+	display: flex;
+	flex: 1 auto;
+	align-self: stretch;
+}
+footer {
+	order: 100;
+	text-align: right;
+}
+
+.editor {
+	display: flex;
+	flex: 1 auto;
+}
+
+.ui.form textarea:not([rows]) {
+	max-height: unset;
+}
