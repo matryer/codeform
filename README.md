@@ -1,6 +1,9 @@
 # codeform
 Go code generation framework.
 
+* Generate output from Go code using templates
+* Interact with a simple model (see [Model documentation](https://godoc.org/github.com/matryer/codeform/model)
+
 ## Get started
 
 To install Codeform, get it:
@@ -47,3 +50,9 @@ The `codeform` tool allows you to generate output using Go templates.
 ```
 
 * See the [sources documentation](https://github.com/matryer/codeform/tree/master/source) for an overview of acceptable values for `src` and `templatesrc`
+
+# Advanced
+
+If you want to generate output using Go code instead of templates, you can
+import the `github.com/matryer/codeform/parser` package directly and interact
+with the model yourself (see [Model documentation](https://godoc.org/github.com/matryer/codeform/model)).
