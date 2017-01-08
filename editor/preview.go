@@ -3,6 +3,7 @@ package editor
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -39,6 +40,17 @@ func previewHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
 		Output: buf.String(),
 	}
 	return respond(ctx, w, r, res, http.StatusOK)
+}
+
+func defaultSourceHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	http.ServeFile(w, r, "./code/default-source.go")
+	return nil
+}
+
+func defaultTemplateHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	log.Println("serving:", "./code/default-source.go")
+	http.ServeFile(w, r, "./code/default-template.tpl")
+	return nil
 }
 
 func respond(ctx context.Context, w http.ResponseWriter, r *http.Request, data interface{}, code int) error {

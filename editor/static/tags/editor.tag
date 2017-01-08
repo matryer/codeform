@@ -50,7 +50,33 @@
 			this.messageBox = $('#messagebox', this.root)
 			this.refs.templatebox.on('change', this.render)
 			this.refs.sourcebox.on('change', this.render)
+
+			this.defaultsCounter = 0;
+			$.ajax({
+				type: "get",
+				url: "/default-source",
+				success: function(code){
+					this.refs.sourcebox.val(code)
+					this.defaultsCounter++
+					this.checkDefaultsLoaded()
+				}.bind(this)
+			})
+			$.ajax({
+				type: "get",
+				url: "/default-template",
+				success: function(code){
+					this.refs.templatebox.val(code)
+					this.defaultsCounter++
+					this.checkDefaultsLoaded()
+				}.bind(this)
+			})
+
 		}.bind(this))
+
+		checkDefaultsLoaded() {
+			if (this.defaultsCounter < 2) { return }
+			this.render()
+		}
 
 		app.on('glance', function(data) {
 			this.message = data.message
