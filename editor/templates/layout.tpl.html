@@ -31,10 +31,10 @@
 			</div>
 		</header>
 		<div class='content'>
-			{{ template "content" }}
+			{{ template "content" . }}
 		</div>
 		<footer>
-			Copyright &copy;2017 <a href='https://github.com/matryer/codeform/graphs/contributors' target='_blank'>Codeform contributors</a>
+			v{{ .Version }} - Copyright &copy;2017 <a href='https://github.com/matryer/codeform/graphs/contributors' target='_blank'>Codeform contributors</a>
 		</footer>
 	</div>
 	<script src='/static/lib/jquery-3.1.1.min.js'></script>

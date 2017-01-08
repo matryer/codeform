@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/matryer/codeform/internal/version"
 	"golang.org/x/net/context"
 )
 
@@ -20,9 +21,16 @@ func templateHandler(name string) Handler {
 		if err != nil {
 			return err
 		}
-		if err := tmpl.ExecuteTemplate(w, "layout", nil); err != nil {
+		info := pageinfo{
+			Version: version.Current,
+		}
+		if err := tmpl.ExecuteTemplate(w, "layout", info); err != nil {
 			return err
 		}
 		return nil
 	})
+}
+
+type pageinfo struct {
+	Version string
 }
