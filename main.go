@@ -39,6 +39,7 @@ func main() {
 		out          = flag.String("out", "", "output file (defaults to standard out)")
 		timeout      = flag.Duration("timeout", 2*time.Second, "timeout for HTTP requests")
 		verbose      = flag.Bool("v", false, "verbose logging")
+		nolinefeed   = flag.Bool("n", false, "suppress final linefeed")
 		printVersion = flag.Bool("version", false, "print version and exit")
 	)
 	flag.Usage = func() {
@@ -121,6 +122,9 @@ func main() {
 	if err != nil {
 		fatalErr = err
 		return
+	}
+	if !*nolinefeed {
+		w.Write([]byte("\n"))
 	}
 	if len(*out) > 0 {
 		// save file

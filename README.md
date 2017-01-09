@@ -34,6 +34,7 @@ The `codeform` tool allows you to generate output using Go templates.
 -timeout duration
 	timeout for HTTP requests (default 2s)
 -v	verbose logging
+-n  suppress final line feed
 -version
 	print version and exit
 
