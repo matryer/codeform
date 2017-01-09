@@ -1,4 +1,4 @@
-# Codeform Examples
+# Snippets
 
 ## Create a struct implementation for each interface
 
