@@ -23,11 +23,9 @@
 			max-height: unset  !important;
 			font-family: monospace;
 			resize: none !important;
+			border: none !important;
 		}
 
-		textarea.codeboxtextarea[readonly="readonly"] {
-			border: 0;
-		}
 	</style>
 	<div class='wrapper'>
 		<div class='busy ui basic segment' show={ busy && showbusy }>
