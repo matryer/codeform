@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>{{ template "title" }}</title>
-	<link rel='stylesheet' href='/static/dist/all.css'>
+	<link rel='stylesheet' href='/static/dist/all.css?v={{ .Version }}'>
 </head>
 <body>
 	<div class='page'>
@@ -44,7 +44,7 @@
 			</div>
 		</footer>
 	</div>
-	<script src='/static/dist/all.js'></script>
+	<script src='/static/dist/all.js?v={{ .Version }}'></script>
 	{{ template "scripts" }}
 	<script>
 		riot.compile(function() {
