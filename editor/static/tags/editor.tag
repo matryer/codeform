@@ -21,13 +21,13 @@
 		.source {
 			margin-bottom: 10px;
 		}
-		.tabular.menu {
+		.menu {
 			flex-shrink: 0;
 		}
-		.ui.top.attached.tabular.menu {
+		.ui.top.menu {
 			margin: 0px;
 		}
-		.ui.bottom.attached.tab.active.segment {
+		.ui.bottom.tab.active {
 			display: flex;
 			flex: 1 100%;
 			margin: 0px;
@@ -38,6 +38,7 @@
 			flex-direction: column;
 			align-items: stretch;
 			align-content: stretch;
+			margin-top: 10px;
 		}
 
 		iframe {
@@ -54,12 +55,12 @@
 		<div name='messagebox' class='ui message' show={ message }>
 			{ message }
 		</div>
-		<div class="ui top attached tabular menu">
+		<div class="ui top secondary pointing menu">
 			<a class="item" data-tab="source">Source</a>
 			<a class="active item" data-tab="preview">Preview</a>
 			<a class="item" data-tab="docs">Docs</a>
 		</div>
-		<div class="ui bottom attached tab segment" data-tab="source">
+		<div class="ui bottom tab" data-tab="source">
 			<div class='tab-body'>
 				<p>
 					Source code will be used to render the preview - must be valid Go code
@@ -67,12 +68,12 @@
 				<codebox ref='sourcebox' placeholder="Go source code" class='box'></codebox>
 			</div>
 		</div>
-		<div class="ui bottom attached tab active segment" data-tab="preview">
+		<div class="ui bottom active tab" data-tab="preview">
 			<div class='tab-body'>
 				<codebox ref='previewbox' placeholder="The preview will render here once you have entered some source, and a template." class='box' readonly='true' busy={ busy } showbusy='true'></codebox>
 			</div>
 		</div>
-		<div class="ui bottom attached tab segment" data-tab="docs">
+		<div class="ui bottom tab" data-tab="docs">
 			<div class='tab-body'>
 				<div class="ui three item secondary link menu">
 					<a class='active item' href='https://godoc.org/github.com/matryer/codeform/model' target='docs'>Model API</a>

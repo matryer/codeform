@@ -24,6 +24,12 @@
 			font-family: monospace;
 			resize: none !important;
 			border: none !important;
+
+			background-color: #FFD !important;
+		}
+
+		.codeboxtextarea[readonly="readonly"] {
+			background-color: #eee !important;
 		}
 
 	</style>
