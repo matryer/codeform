@@ -21,27 +21,68 @@
 		.source {
 			margin-bottom: 10px;
 		}
+		.tabular.menu {
+			flex-shrink: 0;
+		}
+		.ui.top.attached.tabular.menu {
+			margin: 0px;
+		}
+		.ui.bottom.attached.tab.active.segment {
+			display: flex;
+			flex: 1 100%;
+			margin: 0px;
+		}
+		.tab-body {
+			display: flex;
+			flex: 1 100%;
+			flex-direction: column;
+			align-items: stretch;
+			align-content: stretch;
+		}
+
+		iframe {
+			border: 0;
+			display: flex;
+			flex: 1;
+		}
+
 	</style>
 	<div class='template'>
-		<codebox ref='templatebox' placeholder="Template" class='box'></codebox>
+		<codebox ref='templatebox' placeholder='Template' class='box'></codebox>
 	</div>
 	<div class='preview'>
-		<div class="ui source accordion">
-			<div class="title">
-			<i class="dropdown icon"></i>
-				Source
-			</div>
-			<div class="content">
+		<div name='messagebox' class='ui message' show={ message }>
+			{ message }
+		</div>
+		<div class="ui top attached tabular menu">
+			<a class="item" data-tab="source">Source</a>
+			<a class="active item" data-tab="preview">Preview</a>
+			<a class="item" data-tab="docs">Docs</a>
+		</div>
+		<div class="ui bottom attached tab segment" data-tab="source">
+			<div class='tab-body'>
 				<p>
-					This source code will be used to render the preview:
+					Source code will be used to render the preview - must be valid Go code
 				</p>
 				<codebox ref='sourcebox' placeholder="Go source code" class='box'></codebox>
 			</div>
 		</div>
-		<div name='messagebox' class='ui message' show={ message }>
-			{ message }
+		<div class="ui bottom attached tab active segment" data-tab="preview">
+			<div class='tab-body'>
+				<codebox ref='previewbox' placeholder="The preview will render here once you have entered some source, and a template." class='box' readonly='true' busy={ busy } showbusy='true'></codebox>
+			</div>
 		</div>
-		<codebox ref='previewbox' placeholder="The preview will render here once you have entered some source, and a template." class='box' readonly='true' busy={ busy } showbusy='true'></codebox>
+		<div class="ui bottom attached tab segment" data-tab="docs">
+			<div class='tab-body'>
+				<div class="ui three item secondary link menu">
+					<a class='active item' href='https://godoc.org/github.com/matryer/codeform/model' target='docs'>Model API</a>
+					<a class='item' href='https://godoc.org/github.com/matryer/codeform/render' target='docs'>Template utilities</a>
+					<a class='item' href='https://github.com/matryer/codeform/tree/master/examples' target='docs'>Examples</a>
+				</div>
+				<iframe id='docs' src='https://godoc.org/github.com/matryer/codeform/model'></iframe>
+			</div>
+		</div>
+
 	</div>
 	<script>
 
@@ -50,7 +91,11 @@
 			this.messageBox = $('#messagebox', this.root)
 			this.refs.templatebox.on('change', this.render)
 			this.refs.sourcebox.on('change', this.render)
-
+			$('.menu .item', this.root).tab()
+			this.items = $('.link.menu .item', this.root).click(function(e){
+				this.items.removeClass('active')
+				$(e.target).addClass('active')
+			}.bind(this))
 			this.defaultsCounter = 0;
 			$.ajax({
 				type: "get",
@@ -79,9 +124,7 @@
 		}
 
 		app.on('glance', function(data) {
-			this.message = data.message
-			this.update()
-			this.messageBox.hide().fadeIn()
+			console.info(data.message)
 		}.bind(this))
 
 		render() {

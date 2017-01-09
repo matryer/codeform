@@ -1,8 +1,9 @@
 <codebox>
 	<style>
+
 		.wrapper {
 			display: flex;
-			flex: 1;
+			flex: 1 100%;
 			flex-direction: column;
 		}
 
@@ -23,6 +24,10 @@
 			font-family: monospace;
 			resize: none !important;
 		}
+
+		textarea.codeboxtextarea[readonly="readonly"] {
+			border: 0;
+		}
 	</style>
 	<div class='wrapper'>
 		<div class='busy ui basic segment' show={ busy && showbusy }>
@@ -30,7 +35,6 @@
 		</div>
 		<textarea placeholder={placeholder} show={ (!busy && showbusy) || !showbusy } ref='actualbox' id={"box"+this.uniqueValue} class='codeboxtextarea' readonly={ readonly } onkeyup={ onkeyup }></textarea>
 		<div class="ui tiny icon buttons">
-			<button class="ui button" if={ !readonly }><i class="cloud download icon"></i></button>
 			<button id={"copybtn"+this.uniqueValue} class="ui copy button" data-clipboard-target={"#box"+this.uniqueValue}><i class="copy icon"></i></button>
 		</div>
 	</div>

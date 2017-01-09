@@ -13,9 +13,6 @@
 					<div class="header item">
 						Codeform
 					</div>
-					<a href='https://godoc.org/github.com/matryer/codeform/model' target='_blank' class='item'>
-						Model API
-					</a>
 					<div class="right menu">
 						<a href='https://github.com/matryer/codeform' target='_blank' class="item">
 							Github
@@ -37,7 +34,14 @@
 			{{ template "content" . }}
 		</div>
 		<footer>
-			v{{ .Version }} - Copyright &copy;2017 <a href='https://github.com/matryer/codeform/graphs/contributors' target='_blank'>Codeform contributors</a>
+			<div class='ui horizontal bulleted link list'>
+				<a href='https://github.com/matryer/codeform' target='_blank' class="item">
+					View on GitHub
+				</a>
+				<div class='item'>
+					v{{ .Version }} - Copyright &copy;2017 <a href='https://github.com/matryer/codeform/graphs/contributors' target='_blank'>Codeform contributors</a>
+				</div>
+			</div>
 		</footer>
 	</div>
 	<script src='/static/lib/jquery-3.1.1.min.js'></script>
