@@ -2,7 +2,8 @@
 
 ## Create a struct implementation for each interface
 
-```
+{% raw %}
+```liquid
 {{ range .Packages }}package {{.Name}}
 {{- range .Interfaces }}
 {{ $interface := . }}
@@ -15,3 +16,4 @@ func (m *My{{.Name}}) {{.Name}}{{ . | Signature}} {
 {{- end }}
 {{ end }}
 ```
+{% endraw %}
