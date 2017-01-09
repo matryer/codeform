@@ -80,8 +80,8 @@ The template (expanded) will look like this:
 
 ```
 {{ range .Packages }}
-{{ .Name }
-}{{ end }}
+{{ .Name }}
+{{ end }}
 ```
 
 We can provide this template as a flag to the `codeform` command:
