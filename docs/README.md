@@ -79,7 +79,7 @@ We are going to provide a simple template that outputs the package name.
 The template (expanded) will look like this:
 
 {% raw %}
-```
+```liquid
 {{ range .Packages }}
 {{ .Name }}
 {{ end }}
@@ -105,7 +105,7 @@ greeter
 Create a new file called `methods.tpl` and populate it with the following code:
 
 {% raw %}
-```
+```liquid
 {{- range .Packages }}
 {{- range .Interfaces }}{{ $interface := . }}
 {{- range .Methods }}
