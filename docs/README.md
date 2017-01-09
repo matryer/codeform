@@ -4,5 +4,24 @@
 
 Welcome to Codeform, easy Go code generation using templates. 
 
-* [Examples](examples.md)
+## Tutorial
+
+### Install Codeform
+
+To install Codeform, ensure you have [Go installed](https://golang.org/dl/) and in a terminal:
+
+```bash
+go get github.com/matryer/codeform/...
+```
+
+This will install Codeform from source, including adding the `codeform` command to your `$GOBIN`
+directory. This tutorial assumes `$GOBIN` is added to your `$PATH`.
+
+### Ensure Codeform is installed
+
+In a terminal, do:
+
+```bash
+codeform -version
+```
 
