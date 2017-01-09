@@ -1,7 +1,7 @@
 {{ define "layout" }}
 <html>
 <head>
-	<title>{{ template "title" }}</title>
+	<title>{{ template "title" . }}</title>
 	<link rel='stylesheet' href='/static/dist/all.css?v={{ .Version }}'>
 </head>
 <body>
@@ -45,7 +45,7 @@
 		</footer>
 	</div>
 	<script src='/static/dist/all.js?v={{ .Version }}'></script>
-	{{ template "scripts" }}
+	{{ template "scripts" . }}
 	<script>
 		riot.compile(function() {
 			riot.mount('*')
