@@ -2,5 +2,5 @@
 
 Go code generation framework.
 
-## Get started
+* [Examples](examples.md)
 
