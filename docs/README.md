@@ -78,17 +78,21 @@ We are going to provide a simple template that outputs the package name.
 
 The template (expanded) will look like this:
 
+{% raw %}
 ```
-\{\{ range .Packages \}\}
-\{\{ .Name \}\}
-\{\{ end \}\}
+{{ range .Packages }}
+{{ .Name }}
+{{ end }}
 ```
+{% endraw %}
 
 We can provide this template as a flag to the `codeform` command:
 
+{% raw %}
 ```bash
-codeform -src greeter.go -template "\{\{ range .Packages \}\}\{\{ .Name \}\}\{\{ end \}\}"
+codeform -src greeter.go -template "{{ range .Packages }}{{ .Name }}{{ end }}"
 ```
+{% endraw %}
 
 You should see the following output:
 
@@ -100,15 +104,17 @@ greeter
 
 Create a new file called `methods.tpl` and populate it with the following code:
 
+{% raw %}
 ```
-\{\{- range .Packages \}\}
-\{\{- range .Interfaces \}\}\{\{ $interface := . \}\}
-\{\{- range .Methods \}\}
-\{\{ $interface.Name \}\}.\{\{ .Name \}\}\{\{ . | Signature \}\}
-\{\{- end \}\}
-\{\{- end \}\}
-\{\{- end \}\}
+{{- range .Packages }}
+{{- range .Interfaces }}{{ $interface := . }}
+{{- range .Methods }}
+{{ $interface.Name }}.{{ .Name }}{{ . | Signature }}
+{{- end }}
+{{- end }}
+{{- end }}
 ```
+{% endraw %}
 
 Now provide the file via the `templatesrc` flag:
 
