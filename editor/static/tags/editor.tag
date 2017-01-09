@@ -75,7 +75,7 @@
 		</div>
 		<div class="ui bottom tab" data-tab="docs">
 			<div class='tab-body'>
-				<div class="ui three item secondary link menu">
+				<div class="ui four item secondary link menu">
 					<a class='active item' href='https://godoc.org/github.com/matryer/codeform/model' target='docs'>Model API</a>
 					<a class='item' href='https://golang.org/pkg/text/template/' target='docs'>Template guide</a>
 					<a class='item' href='https://godoc.org/github.com/matryer/codeform/render' target='docs'>Utilities</a>
