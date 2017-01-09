@@ -1,6 +1,25 @@
 // Package render provides utilities for rendering code using
 // templates.
 //
+// Writing templates
+//
+// Codeform makes use of Go's text/template package, it is recommended
+// that you become familiar with Go templates starting with the documentation
+// at https://golang.org/pkg/text/template/.
+//
+// Using template functions
+//
+// Template functions are helpers that solve common rendering problems,
+// such as writing a function signature, or listing argument types, etc.
+//
+// To use a template function, type its name following a pipe character after
+// the item you wish to render. For example, the following template snippet
+// will render all methods using the Signature helper:
+//
+//     {{- range .Methods }}
+//     {{ .Name }}Func func({{ . | Signature }}
+//     {{- end }}
+//
 // Template functions
 //
 // To use the utility functions in the Go template packages, call Funcs
