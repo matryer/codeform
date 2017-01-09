@@ -79,15 +79,15 @@ We are going to provide a simple template that outputs the package name.
 The template (expanded) will look like this:
 
 ```
-&#123; range .Packages &#125;
-&#123; .Name &#125;
-&#123; end &#125;
+{{ range .Packages }}
+{{ .Name }}
+{{ end }}
 ```
 
 We can provide this template as a flag to the `codeform` command:
 
 ```bash
-codeform -src greeter.go -template "&#123; range .Packages &#125;&#123; .Name &#125;&#123; end &#125;"
+codeform -src greeter.go -template "{{ range .Packages }}{{ .Name }}{{ end }}"
 ```
 
 You should see the following output:
@@ -101,13 +101,13 @@ greeter
 Create a new file called `methods.tpl` and populate it with the following code:
 
 ```
-&#123;- range .Packages &#125;
-&#123;- range .Interfaces &#125;&#123; $interface := . &#125;
-&#123;- range .Methods &#125;
-&#123; $interface.Name &#125;.&#123; .Name &#125;&#123; . | Signature &#125;
-&#123;- end &#125;
-&#123;- end &#125;
-&#123;- end &#125;
+{{- range .Packages }}
+{{- range .Interfaces }}{{ $interface := . }}
+{{- range .Methods }}
+{{ $interface.Name }}.{{ .Name }}{{ . | Signature }}
+{{- end }}
+{{- end }}
+{{- end }}
 ```
 
 Now provide the file via the `templatesrc` flag:
