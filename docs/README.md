@@ -4,7 +4,12 @@
 
 Welcome to Codeform, easy Go code generation using templates. 
 
-## Tutorial
+# Tutorials
+
+To play with Codeform, head over to the [Online Editor](http://editor.codeform.in)
+where you can modify the template, and see a live preview.
+
+## Codeform command line tool
 
 ### Install Codeform
 
