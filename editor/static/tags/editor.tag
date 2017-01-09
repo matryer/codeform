@@ -77,7 +77,7 @@
 				<div class="ui three item secondary link menu">
 					<a class='active item' href='https://godoc.org/github.com/matryer/codeform/model' target='docs'>Model API</a>
 					<a class='item' href='https://godoc.org/github.com/matryer/codeform/render' target='docs'>Template utilities</a>
-					<a class='item' href='https://matryer.github.io/codeform/examples.html' target='docs'>Examples</a>
+					<a class='item' href='http://codeform.in/snippets.html' target='docs'>Snippets</a>
 				</div>
 				<iframe id='docs' src='https://godoc.org/github.com/matryer/codeform/model'></iframe>
 			</div>
