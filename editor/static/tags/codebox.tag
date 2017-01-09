@@ -24,7 +24,7 @@
 			font-family: monospace;
 			resize: none !important;
 			border: none !important;
-
+			top: -15px !important;
 			background-color: #FFD !important;
 		}
 
@@ -38,9 +38,9 @@
 			<div class="ui active loader"></div>
 		</div>
 		<textarea placeholder={placeholder} show={ (!busy && showbusy) || !showbusy } ref='actualbox' id={"box"+this.uniqueValue} class='codeboxtextarea' readonly={ readonly } onkeyup={ onkeyup }></textarea>
-		<div class="ui tiny icon buttons">
+		<!--<div class="ui tiny icon buttons">
 			<button id={"copybtn"+this.uniqueValue} class="ui copy button" data-clipboard-target={"#box"+this.uniqueValue}><i class="copy icon"></i></button>
-		</div>
+		</div>-->
 	</div>
 	<script>
 
