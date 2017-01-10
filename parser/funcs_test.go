@@ -27,6 +27,7 @@ func TestFuncs(t *testing.T) {
 	code, err := New(source.MustLocal("./testdata/types")).Parse()
 	is.NoErr(err) // Parse()
 	is.OK(code != nil)
+	is.Equal(len(code.Packages), 1) // should be one package
 	is.Equal(len(code.Packages[0].Funcs), 7)
 
 	is.Equal(code.Packages[0].Funcs[0].Name, "Func1")

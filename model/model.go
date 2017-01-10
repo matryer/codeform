@@ -11,6 +11,8 @@ type Code struct {
 type Package struct {
 	// Name is the name of the package.
 	Name string `json:"name"`
+	// Imports is a list of packages that need importing.
+	Imports []string
 	// Funcs represents the global functions.
 	Funcs []Func `json:"funcs"`
 	// Interfaces represents the global interfaces in the

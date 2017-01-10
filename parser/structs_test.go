@@ -12,7 +12,7 @@ func TestStructs(t *testing.T) {
 	code, err := New(source.MustLocal("./testdata/types")).Parse()
 	is.NoErr(err) // Parse()
 	is.OK(code != nil)
-	is.Equal(len(code.Packages), 1)
+	is.Equal(len(code.Packages), 1) // should be one package
 	pkg := code.Packages[0]
 
 	is.Equal(len(pkg.Structs), 3)

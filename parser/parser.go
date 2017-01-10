@@ -8,9 +8,8 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
-	"strings"
-
 	"path"
+	"strings"
 
 	"github.com/matryer/codeform/model"
 	"github.com/matryer/codeform/source"
@@ -36,6 +35,7 @@ func New(src *source.Source) *Parser {
 
 // Parse parses the source file and returns the model.Code.
 func (p *Parser) Parse() (*model.Code, error) {
+	importer := newSmartImporter(importer.Default())
 	code := &model.Code{}
 	fset := token.NewFileSet()
 	var pkgs map[string]*ast.Package
@@ -46,7 +46,7 @@ func (p *Parser) Parse() (*model.Code, error) {
 			return nil, err
 		}
 		for _, pkg := range pkgs {
-			if err := p.parsePackage(code, pkg, fset); err != nil {
+			if err := p.parsePackage(code, pkg, fset, importer); err != nil {
 				return nil, err
 			}
 		}
@@ -56,7 +56,7 @@ func (p *Parser) Parse() (*model.Code, error) {
 			return nil, err
 		}
 		files := []*ast.File{file}
-		conf := types.Config{Importer: importer.Default()}
+		conf := types.Config{Importer: importer}
 		tpkg, err := conf.Check(p.src.Path, fset, files, nil)
 		if err != nil {
 			return nil, err
@@ -72,20 +72,26 @@ func (p *Parser) Parse() (*model.Code, error) {
 	return code, nil
 }
 
-func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.FileSet) error {
+func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.FileSet, importer types.Importer) error {
 	i := 0
 	files := make([]*ast.File, len(pkg.Files))
 	for _, file := range pkg.Files {
 		files[i] = file
 		i++
 	}
-	conf := types.Config{Importer: importer.Default()}
+	conf := types.Config{Importer: importer}
 	tpkg, err := conf.Check(p.src.Path, fset, files, nil)
 	if err != nil {
 		return err
 	}
+	timports := tpkg.Imports()
+	imports := make([]string, len(timports))
+	for i, tpkg := range timports {
+		imports[i] = tpkg.Path()
+	}
 	packageModel := model.Package{
-		Name: tpkg.Name(),
+		Name:    tpkg.Name(),
+		Imports: imports,
 	}
 	if err := p.parseGlobals(&packageModel, tpkg); err != nil {
 		return err
@@ -97,8 +103,23 @@ func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.Fi
 func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) error {
 	scope := tpkg.Scope()
 	for _, name := range scope.Names() {
+
 		thing := scope.Lookup(name)
 		typ := thing.Type().Underlying()
+
+		parsedType, err := p.parseType(packageModel, tpkg, thing)
+		if err != nil {
+			return errors.Wrap(err, "parseType")
+		}
+
+		switch thing.(type) {
+		case *types.Const:
+			packageModel.Consts = append(packageModel.Consts, *parsedType)
+			continue
+		case *types.Var:
+			packageModel.Vars = append(packageModel.Vars, *parsedType)
+			continue
+		}
 		switch val := typ.(type) {
 		case *types.Signature:
 			fn, err := p.parseSignature(val)
@@ -108,7 +129,7 @@ func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) 
 			fn.Name = thing.Name()
 			packageModel.Funcs = append(packageModel.Funcs, *fn)
 		case *types.Interface:
-			iface, err := p.parseInterface(val)
+			iface, err := p.parseInterface(val.Complete())
 			if err != nil {
 				return errors.Wrap(err, "parseInterface")
 			}
@@ -121,17 +142,8 @@ func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) 
 			}
 			structure.Name = thing.Name()
 			packageModel.Structs = append(packageModel.Structs, *structure)
-		default: // everything else
-			v, err := p.parseType(thing, val)
-			if err != nil {
-				return errors.Wrap(err, "parseType")
-			}
-			switch thing.(type) {
-			case *types.Const:
-				packageModel.Consts = append(packageModel.Consts, *v)
-			case *types.Var:
-				packageModel.Vars = append(packageModel.Vars, *v)
-			}
+		default:
+			return fmt.Errorf("%T not supported", thing)
 		}
 	}
 	return nil
@@ -181,27 +193,20 @@ func (p *Parser) parseMethods(typ types.Type) ([]model.Func, error) {
 	return methodSlice, nil
 }
 
-func (p *Parser) parseType(obj types.Object, typ types.Type) (*model.Var, error) {
-	typeStr := types.TypeString(typ, nil) // TODO: qualifier
-	// TODO: handle untyped vars
-	var name string
-	fullname := path.Base(typeStr)
-
-	fmt.Println("fullname:", fullname)
-
-	name = fullname
-	if strings.Contains(name, ".") {
-		name = strings.Split(name, ".")[1]
-	}
-	if _, pointer := typ.(*types.Pointer); pointer {
-		name = "*" + name
-		fullname = "*" + fullname
+func (p *Parser) parseType(pkg *model.Package, tpkg *types.Package, obj types.Object) (*model.Var, error) {
+	typeStr := types.TypeString(obj.Type(), types.RelativeTo(tpkg))
+	if strings.Contains(typeStr, "/") {
+		// turn *path/to/package.Type into *package.Type
+		pointer := strings.HasPrefix(typeStr, "*")
+		typeStr = path.Base(typeStr)
+		if pointer {
+			typeStr = "*" + typeStr
+		}
 	}
 	return &model.Var{
 		Name: obj.Name(),
 		Type: model.Type{
-			Name:     name,
-			Fullname: fullname,
+			Name: typeStr,
 		},
 	}, nil
 }

@@ -12,10 +12,10 @@ func TestVars(t *testing.T) {
 	code, err := New(source.MustLocal("./testdata/types")).Parse()
 	is.NoErr(err) // Parse()
 	is.OK(code != nil)
-	is.Equal(len(code.Packages), 1)
+	is.Equal(len(code.Packages), 1) // should be one package
 	pkg := code.Packages[0]
 
-	is.Equal(len(pkg.Vars), 8)
+	is.Equal(len(pkg.Vars), 12)
 	for _, v := range pkg.Vars {
 		switch v.Name {
 		case "var1":
@@ -34,6 +34,14 @@ func TestVars(t *testing.T) {
 			is.Equal(v.Type.Name, "chan []byte")
 		case "amap":
 			is.Equal(v.Type.Name, "map[string]int")
+		case "customType":
+			is.Equal(v.Type.Name, "*Struct1")
+		case "externalType":
+			is.Equal(v.Type.Name, "*otherpackage.ExternalStruct")
+		case "externalType2":
+			is.Equal(v.Type.Name, "otherpackage.ExternalStruct")
+		case "r":
+			is.Equal(v.Type.Name, "io.Reader")
 		}
 	}
 

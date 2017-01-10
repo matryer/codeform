@@ -1,9 +1,12 @@
 package render_test
 
 import (
+	"bufio"
 	"bytes"
 	"html/template"
 	"testing"
+
+	"strings"
 
 	"github.com/matryer/codeform/parser"
 	"github.com/matryer/codeform/render"
@@ -20,7 +23,12 @@ func TestRender(t *testing.T) {
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, code)
 	is.NoErr(err)
-	is.Equal(buf.String(), expected)
+	// check that each line of expected appears in the output
+	actual := buf.String()
+	s := bufio.NewScanner(strings.NewReader(expected))
+	for s.Scan() {
+		is.OK(strings.Contains(actual, s.Text()))
+	}
 }
 
 var testTemplate = `{{ range .Packages }}package {{ .Name }}
@@ -43,8 +51,7 @@ func (m *{{$interface.Name}}Mock) {{.Name}}({{ .Args | ArgList }}) {{ .ReturnArg
 }
 {{- end }}
 {{- end }}
-{{- end }}
-`
+{{- end -}}`
 
 var expected = `package pkgname
 
@@ -71,5 +78,4 @@ func (m *PersonMock) ShakeHand(level int) error {
 }
 func (m *PersonMock) Whisper(messages ...string)  {
 	m.WhisperFunc(messages...)
-}
-`
+}`
