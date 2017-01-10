@@ -12,7 +12,7 @@ type Package struct {
 	// Name is the name of the package.
 	Name string `json:"name"`
 	// Imports is a list of packages that need importing.
-	Imports []string
+	Imports []Import `json:"imports"`
 	// Funcs represents the global functions.
 	Funcs []Func `json:"funcs"`
 	// Interfaces represents the global interfaces in the
@@ -27,6 +27,11 @@ type Package struct {
 	// Structs represents the global structs defined in this
 	// package.
 	Structs []Struct `json:"structs"`
+}
+
+// Import represents an imported package.
+type Import struct {
+	Name string `json:"name"`
 }
 
 // Struct represents a struct.

@@ -85,9 +85,9 @@ func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.Fi
 		return err
 	}
 	timports := tpkg.Imports()
-	imports := make([]string, len(timports))
+	imports := make([]model.Import, len(timports))
 	for i, tpkg := range timports {
-		imports[i] = tpkg.Path()
+		imports[i] = model.Import{Name: tpkg.Path()}
 	}
 	packageModel := model.Package{
 		Name:    tpkg.Name(),
