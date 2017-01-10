@@ -41,6 +41,15 @@ var TemplateFuncs = map[string]interface{}{
 	"ArgListNames": ArgListNames,
 	"ArgListTypes": ArgListTypes,
 	"Signature":    Signature,
+	"Camel":        Camel,
+}
+
+// Camel turns a string into camel case.
+func Camel(s string) string {
+	if len(s) < 2 {
+		return strings.ToLower(s)
+	}
+	return strings.ToLower(s[0:1]) + s[1:]
 }
 
 // ArgList turns model.Args into a Go argument list.

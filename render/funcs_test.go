@@ -8,6 +8,15 @@ import (
 	"github.com/matryer/is"
 )
 
+func TestCamel(t *testing.T) {
+	is := is.New(t)
+	is.Equal(render.Camel("SomeService"), "someService")
+	is.Equal(render.Camel("someService"), "someService")
+	is.Equal(render.Camel("A"), "a")
+	is.Equal(render.Camel("a"), "a")
+	is.Equal(render.Camel(""), "")
+}
+
 func TestArgList(t *testing.T) {
 	is := is.New(t)
 	args := model.Args{
