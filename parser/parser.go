@@ -8,7 +8,9 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
-	"sync"
+	"strings"
+
+	"path"
 
 	"github.com/matryer/codeform/model"
 	"github.com/matryer/codeform/source"
@@ -17,7 +19,6 @@ import (
 
 // Parser parses source code and generates a model.Code.
 type Parser struct {
-	lock sync.Mutex
 	src  *source.Source
 	fset *token.FileSet
 	code *model.Code
@@ -34,30 +35,29 @@ func New(src *source.Source) *Parser {
 }
 
 // Parse parses the source file and returns the model.Code.
-// Multiple calls to Parse() are safe but should be avoided.
 func (p *Parser) Parse() (*model.Code, error) {
-	p.lock.Lock()
-	defer p.lock.Unlock()
 	code := &model.Code{}
-	p.fset = token.NewFileSet()
+	fset := token.NewFileSet()
 	var pkgs map[string]*ast.Package
 	if p.src.IsDir {
 		var err error
-		pkgs, err = parser.ParseDir(p.fset, p.src.Path, nil, parser.SpuriousErrors)
+		pkgs, err = parser.ParseDir(fset, p.src.Path, nil, parser.SpuriousErrors)
 		if err != nil {
 			return nil, err
 		}
 		for _, pkg := range pkgs {
-			p.parsePackage(code, pkg)
+			if err := p.parsePackage(code, pkg, fset); err != nil {
+				return nil, err
+			}
 		}
 	} else {
-		file, err := parser.ParseFile(p.fset, p.src.Path, p.src, parser.SpuriousErrors)
+		file, err := parser.ParseFile(fset, p.src.Path, p.src, parser.SpuriousErrors)
 		if err != nil {
 			return nil, err
 		}
 		files := []*ast.File{file}
 		conf := types.Config{Importer: importer.Default()}
-		tpkg, err := conf.Check(p.src.Path, p.fset, files, nil)
+		tpkg, err := conf.Check(p.src.Path, fset, files, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +72,7 @@ func (p *Parser) Parse() (*model.Code, error) {
 	return code, nil
 }
 
-func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package) error {
+func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.FileSet) error {
 	i := 0
 	files := make([]*ast.File, len(pkg.Files))
 	for _, file := range pkg.Files {
@@ -80,7 +80,7 @@ func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package) error {
 		i++
 	}
 	conf := types.Config{Importer: importer.Default()}
-	tpkg, err := conf.Check(p.src.Path, p.fset, files, nil)
+	tpkg, err := conf.Check(p.src.Path, fset, files, nil)
 	if err != nil {
 		return err
 	}
@@ -184,10 +184,24 @@ func (p *Parser) parseMethods(typ types.Type) ([]model.Func, error) {
 func (p *Parser) parseType(obj types.Object, typ types.Type) (*model.Var, error) {
 	typeStr := types.TypeString(typ, nil) // TODO: qualifier
 	// TODO: handle untyped vars
+	var name string
+	fullname := path.Base(typeStr)
+
+	fmt.Println("fullname:", fullname)
+
+	name = fullname
+	if strings.Contains(name, ".") {
+		name = strings.Split(name, ".")[1]
+	}
+	if _, pointer := typ.(*types.Pointer); pointer {
+		name = "*" + name
+		fullname = "*" + fullname
+	}
 	return &model.Var{
 		Name: obj.Name(),
 		Type: model.Type{
-			Name: typeStr,
+			Name:     name,
+			Fullname: fullname,
 		},
 	}, nil
 }
