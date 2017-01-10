@@ -122,21 +122,21 @@ func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) 
 		}
 		switch val := typ.(type) {
 		case *types.Signature:
-			fn, err := p.parseSignature(val)
+			fn, err := p.parseSignature(val, tpkg)
 			if err != nil {
 				return errors.Wrap(err, "parseSignature")
 			}
 			fn.Name = thing.Name()
 			packageModel.Funcs = append(packageModel.Funcs, *fn)
 		case *types.Interface:
-			iface, err := p.parseInterface(val.Complete())
+			iface, err := p.parseInterface(val.Complete(), tpkg)
 			if err != nil {
 				return errors.Wrap(err, "parseInterface")
 			}
 			iface.Name = thing.Name()
 			packageModel.Interfaces = append(packageModel.Interfaces, *iface)
 		case *types.Struct:
-			structure, err := p.parseStruct(thing.Type(), val)
+			structure, err := p.parseStruct(thing.Type(), val, tpkg)
 			if err != nil {
 				return errors.Wrap(err, "parseStruct")
 			}
@@ -149,16 +149,16 @@ func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) 
 	return nil
 }
 
-func (p *Parser) parseStruct(typ types.Type, s *types.Struct) (*model.Struct, error) {
+func (p *Parser) parseStruct(typ types.Type, s *types.Struct, tpkg *types.Package) (*model.Struct, error) {
 	structModel := &model.Struct{}
 	var err error
-	if structModel.Methods, err = p.parseMethods(typ); err != nil {
+	if structModel.Methods, err = p.parseMethods(typ, tpkg); err != nil {
 		return nil, errors.Wrap(err, "parseMethods")
 	}
 	numFields := s.NumFields()
 	for i := 0; i < numFields; i++ {
 		field := s.Field(i)
-		fieldVar, err := p.parseVar(field)
+		fieldVar, err := p.parseVar(field, tpkg)
 		if err != nil {
 			return nil, errors.Wrap(err, "parseVar")
 		}
@@ -168,12 +168,12 @@ func (p *Parser) parseStruct(typ types.Type, s *types.Struct) (*model.Struct, er
 	return structModel, nil
 }
 
-func (p *Parser) parseMethods(typ types.Type) ([]model.Func, error) {
+func (p *Parser) parseMethods(typ types.Type, tpkg *types.Package) ([]model.Func, error) {
 	methods := make(map[string]model.Func)
 	for _, t := range []types.Type{typ, types.NewPointer(typ)} {
 		mset := types.NewMethodSet(t)
 		for i := 0; i < mset.Len(); i++ {
-			methodModel, err := p.parseMethod(mset.At(i))
+			methodModel, err := p.parseMethod(mset.At(i), tpkg)
 			if err != nil {
 				return nil, errors.Wrap(err, "parseMethod")
 			}
@@ -194,29 +194,22 @@ func (p *Parser) parseMethods(typ types.Type) ([]model.Func, error) {
 }
 
 func (p *Parser) parseType(pkg *model.Package, tpkg *types.Package, obj types.Object) (*model.Var, error) {
-	typeStr := types.TypeString(obj.Type(), types.RelativeTo(tpkg))
-	if strings.Contains(typeStr, "/") {
-		// turn *path/to/package.Type into *package.Type
-		pointer := strings.HasPrefix(typeStr, "*")
-		typeStr = path.Base(typeStr)
-		if pointer {
-			typeStr = "*" + typeStr
-		}
+	typ, err := p.parseVarType(obj, tpkg)
+	if err != nil {
+		return nil, errors.Wrap(err, "parseVarType")
 	}
 	return &model.Var{
 		Name: obj.Name(),
-		Type: model.Type{
-			Name: typeStr,
-		},
+		Type: typ,
 	}, nil
 }
 
-func (p *Parser) parseInterface(iface *types.Interface) (*model.Interface, error) {
+func (p *Parser) parseInterface(iface *types.Interface, tpkg *types.Package) (*model.Interface, error) {
 	interfaceModel := &model.Interface{}
 	mlen := iface.NumMethods()
 	for i := 0; i < mlen; i++ {
 		method := iface.Method(i).Type().(*types.Signature)
-		fn, err := p.parseSignature(method)
+		fn, err := p.parseSignature(method, tpkg)
 		if err != nil {
 			return nil, err
 		}
@@ -226,7 +219,7 @@ func (p *Parser) parseInterface(iface *types.Interface) (*model.Interface, error
 	return interfaceModel, nil
 }
 
-func (p *Parser) parseMethod(sel *types.Selection) (*model.Func, error) {
+func (p *Parser) parseMethod(sel *types.Selection, tpkg *types.Package) (*model.Func, error) {
 	funcObj, ok := sel.Obj().(*types.Func)
 	if !ok {
 		return nil, fmt.Errorf("expected *types.Func but got %T", sel.Obj())
@@ -235,7 +228,7 @@ func (p *Parser) parseMethod(sel *types.Selection) (*model.Func, error) {
 	if !ok {
 		return nil, fmt.Errorf("expected *types.Signature but got %T", funcObj.Type())
 	}
-	sigModel, err := p.parseSignature(sig)
+	sigModel, err := p.parseSignature(sig, tpkg)
 	if err != nil {
 		return nil, errors.Wrap(err, "parseSignature")
 	}
@@ -243,12 +236,12 @@ func (p *Parser) parseMethod(sel *types.Selection) (*model.Func, error) {
 	return sigModel, nil
 }
 
-func (p *Parser) parseSignature(fn *types.Signature) (*model.Func, error) {
-	args, err := p.parseVars(fn.Params())
+func (p *Parser) parseSignature(fn *types.Signature, tpkg *types.Package) (*model.Func, error) {
+	args, err := p.parseVars(fn.Params(), tpkg)
 	if err != nil {
 		return nil, errors.Wrap(err, "Params")
 	}
-	retArgs, err := p.parseVars(fn.Results())
+	retArgs, err := p.parseVars(fn.Results(), tpkg)
 	if err != nil {
 		return nil, errors.Wrap(err, "Results")
 	}
@@ -264,11 +257,11 @@ func (p *Parser) parseSignature(fn *types.Signature) (*model.Func, error) {
 	}, nil
 }
 
-func (p *Parser) parseVars(vars *types.Tuple) ([]model.Var, error) {
+func (p *Parser) parseVars(vars *types.Tuple, tpkg *types.Package) ([]model.Var, error) {
 	var varModels []model.Var
 	paramsLen := vars.Len()
 	for i := 0; i < paramsLen; i++ {
-		argModel, err := p.parseVar(vars.At(i))
+		argModel, err := p.parseVar(vars.At(i), tpkg)
 		if err != nil {
 			return nil, errors.Wrap(err, "param")
 		}
@@ -277,8 +270,8 @@ func (p *Parser) parseVars(vars *types.Tuple) ([]model.Var, error) {
 	return varModels, nil
 }
 
-func (p *Parser) parseVar(param *types.Var) (*model.Var, error) {
-	typ, err := p.parseVarType(param.Type())
+func (p *Parser) parseVar(param *types.Var, tpkg *types.Package) (*model.Var, error) {
+	typ, err := p.parseVarType(param, tpkg)
 	if err != nil {
 		return nil, errors.Wrap(err, "parseVarType")
 	}
@@ -291,8 +284,17 @@ func (p *Parser) parseVar(param *types.Var) (*model.Var, error) {
 	return arg, nil
 }
 
-func (p *Parser) parseVarType(typ types.Type) (model.Type, error) {
+func (p *Parser) parseVarType(obj types.Object, tpkg *types.Package) (model.Type, error) {
+	typeStr := types.TypeString(obj.Type(), types.RelativeTo(tpkg))
+	if strings.Contains(typeStr, "/") {
+		// turn *path/to/package.Type into *package.Type
+		pointer := strings.HasPrefix(typeStr, "*")
+		typeStr = path.Base(typeStr)
+		if pointer {
+			typeStr = "*" + typeStr
+		}
+	}
 	return model.Type{
-		Name: typ.String(),
+		Name: typeStr,
 	}, nil
 }
