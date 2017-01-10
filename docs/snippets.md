@@ -17,3 +17,22 @@ func (m *My{{.Name}}) {{.Name}}{{ . | Signature}} {
 {{ end }}
 ```
 {% endraw %}
+
+## Package imports
+
+To import packages mentioned in the source code, use the `.Imports` field on
+the package:
+
+{% raw %}
+```liquid
+{{ range .Packages }}package {{.Name}}
+import (
+	"github.com/explicit/import1"
+	"github.com/explicit/import2"
+{{- range .Imports }}
+	"{{ .Name }}"
+{{ end -}}
+)
+{{ end }}
+```
+{% endraw %}
