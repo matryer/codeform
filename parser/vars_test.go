@@ -15,7 +15,7 @@ func TestVars(t *testing.T) {
 	is.Equal(len(code.Packages), 1) // should be one package
 	pkg := code.Packages[0]
 
-	is.Equal(len(pkg.Vars), 12)
+	is.Equal(len(pkg.Vars), 13)
 	for _, v := range pkg.Vars {
 		switch v.Name {
 		case "var1":
@@ -35,10 +35,12 @@ func TestVars(t *testing.T) {
 		case "amap":
 			is.Equal(v.Type.Name, "map[string]int")
 		case "customType":
+			is.Equal(v.Type.Name, "StructInSameFile")
+		case "customTypePointer":
 			is.Equal(v.Type.Name, "*Struct1")
-		case "externalType":
+		case "externalTypePointer":
 			is.Equal(v.Type.Name, "*otherpackage.ExternalStruct")
-		case "externalType2":
+		case "externalType":
 			is.Equal(v.Type.Name, "otherpackage.ExternalStruct")
 		case "r":
 			is.Equal(v.Type.Name, "io.Reader")

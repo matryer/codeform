@@ -15,7 +15,7 @@ func TestStructs(t *testing.T) {
 	is.Equal(len(code.Packages), 1) // should be one package
 	pkg := code.Packages[0]
 
-	is.Equal(len(pkg.Structs), 3)
+	is.Equal(len(pkg.Structs), 4)
 	is.Equal(pkg.Structs[0].Name, "Struct1")
 	is.Equal(pkg.Structs[1].Name, "Struct2")
 

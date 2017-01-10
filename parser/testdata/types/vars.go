@@ -6,6 +6,10 @@ import (
 	"github.com/matryer/codeform/parser/testdata/otherpackage"
 )
 
+type StructInSameFile struct {
+	Field int
+}
+
 var number int
 
 var name string
@@ -22,9 +26,12 @@ var channel chan []byte
 
 var amap map[string]int
 
-var customType *Struct1
+var customTypePointer *Struct1
 
-var externalType *otherpackage.ExternalStruct
-var externalType2 otherpackage.ExternalStruct
+var customType StructInSameFile
+
+var externalTypePointer *otherpackage.ExternalStruct
+
+var externalType otherpackage.ExternalStruct
 
 var r io.Reader
