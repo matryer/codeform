@@ -43,7 +43,6 @@ func New(src *source.Source) *Parser {
 // Parse parses the source file and returns the model.Code.
 func (p *Parser) Parse() (*model.Code, error) {
 	p.qualifier = func(other *types.Package) string {
-		//log.Println("----- (name) other:", other.Name(), "p.TargetPackage:", p.TargetPackage, ".")
 		if other.Name() == p.TargetPackage {
 			return ""
 		}
@@ -51,7 +50,7 @@ func (p *Parser) Parse() (*model.Code, error) {
 	}
 	if strings.Contains(p.TargetPackage, "/") {
 		p.qualifier = func(other *types.Package) string {
-			//log.Println("----- (path)", other.Path(), p.TargetPackage)
+			// TODO: test this
 			if other.Path() == p.TargetPackage {
 				return ""
 			}
@@ -87,11 +86,11 @@ func (p *Parser) Parse() (*model.Code, error) {
 		if err != nil {
 			return nil, err
 		}
-		if len(p.TargetPackage) == 0 {
-			p.TargetPackage = tpkg.Name()
-		}
 		packageModel := model.Package{
 			Name: tpkg.Name(),
+		}
+		if len(p.TargetPackage) == 0 {
+			p.TargetPackage = tpkg.Name()
 		}
 		if err := p.parseGlobals(&packageModel, tpkg); err != nil {
 			return nil, err
@@ -122,6 +121,17 @@ func (p *Parser) parsePackage(code *model.Code, pkg *ast.Package, fset *token.Fi
 	packageModel := model.Package{
 		Name:    tpkg.Name(),
 		Imports: imports,
+	}
+	if len(p.TargetPackage) > 0 {
+		// remove the import if it matches the target package
+		// since it is no-longer needed
+		var filteredImports []model.Import
+		for _, imp := range packageModel.Imports {
+			if imp.Name != p.TargetPackage {
+				filteredImports = append(filteredImports, imp)
+			}
+		}
+		packageModel.Imports = filteredImports
 	}
 	if err := p.parseGlobals(&packageModel, tpkg); err != nil {
 		return err
