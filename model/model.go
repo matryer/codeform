@@ -5,6 +5,8 @@ package model
 type Code struct {
 	// Packages represents a list of packages.
 	Packages []Package `json:"packages"`
+	// TargetPackageName is the name of the target package.
+	TargetPackageName string
 }
 
 // Package represents a single Go package.

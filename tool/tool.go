@@ -18,19 +18,22 @@ import (
 
 // Job is a single job.
 type Job struct {
-	Code       *source.Source
-	Template   *source.Source
-	Names      []string
-	Packages   []string
-	Interfaces []string
-	Structs    []string
-	Funcs      []string
-	Log        func(...interface{})
+	Code          *source.Source
+	Template      *source.Source
+	TargetPackage string
+	Names         []string
+	Packages      []string
+	Interfaces    []string
+	Structs       []string
+	Funcs         []string
+	Log           func(...interface{})
 }
 
 // Execute runs the job and writes the output to the specified io.Writer.
 func (j *Job) Execute(w io.Writer) error {
-	code, err := parser.New(j.Code).Parse()
+	p := parser.New(j.Code)
+	p.TargetPackage = j.TargetPackage
+	code, err := p.Parse()
 	if err != nil {
 		j.logf("failed to parse source: %s", err)
 		return errors.Wrap(err, "parser")

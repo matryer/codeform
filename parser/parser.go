@@ -9,6 +9,7 @@ import (
 	"go/token"
 	"go/types"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/matryer/codeform/model"
@@ -18,9 +19,15 @@ import (
 
 // Parser parses source code and generates a model.Code.
 type Parser struct {
-	src  *source.Source
-	fset *token.FileSet
-	code *model.Code
+	src *source.Source
+	// TargetPackage is the name or path of the package
+	// that becomes the point of view for type names.
+	// If empty or the same package, types will not be qualified,
+	// otherwise they will include the package name.
+	TargetPackage string
+	qualifier     types.Qualifier
+	fset          *token.FileSet
+	code          *model.Code
 }
 
 // New makes a new Generator for the given package (folder) or
@@ -35,6 +42,22 @@ func New(src *source.Source) *Parser {
 
 // Parse parses the source file and returns the model.Code.
 func (p *Parser) Parse() (*model.Code, error) {
+	p.qualifier = func(other *types.Package) string {
+		//log.Println("----- (name) other:", other.Name(), "p.TargetPackage:", p.TargetPackage, ".")
+		if other.Name() == p.TargetPackage {
+			return ""
+		}
+		return other.Name()
+	}
+	if strings.Contains(p.TargetPackage, "/") {
+		p.qualifier = func(other *types.Package) string {
+			//log.Println("----- (path)", other.Path(), p.TargetPackage)
+			if other.Path() == p.TargetPackage {
+				return ""
+			}
+			return other.Name()
+		}
+	}
 	importer := newSmartImporter(importer.Default())
 	code := &model.Code{}
 	fset := token.NewFileSet()
@@ -46,6 +69,9 @@ func (p *Parser) Parse() (*model.Code, error) {
 			return nil, err
 		}
 		for _, pkg := range pkgs {
+			if len(p.TargetPackage) == 0 {
+				p.TargetPackage = pkg.Name
+			}
 			if err := p.parsePackage(code, pkg, fset, importer); err != nil {
 				return nil, err
 			}
@@ -61,6 +87,9 @@ func (p *Parser) Parse() (*model.Code, error) {
 		if err != nil {
 			return nil, err
 		}
+		if len(p.TargetPackage) == 0 {
+			p.TargetPackage = tpkg.Name()
+		}
 		packageModel := model.Package{
 			Name: tpkg.Name(),
 		}
@@ -69,6 +98,7 @@ func (p *Parser) Parse() (*model.Code, error) {
 		}
 		code.Packages = append(code.Packages, packageModel)
 	}
+	code.TargetPackageName = filepath.Base(p.TargetPackage)
 	return code, nil
 }
 
@@ -285,7 +315,7 @@ func (p *Parser) parseVar(param *types.Var, tpkg *types.Package) (*model.Var, er
 }
 
 func (p *Parser) parseVarType(obj types.Object, tpkg *types.Package) (model.Type, error) {
-	typeStr := types.TypeString(obj.Type(), types.RelativeTo(tpkg))
+	typeStr := types.TypeString(obj.Type(), p.qualifier)
 	if strings.Contains(typeStr, "/") {
 		// turn *path/to/package.Type into *package.Type
 		pointer := strings.HasPrefix(typeStr, "*")
