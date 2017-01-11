@@ -27,20 +27,21 @@ func main() {
 		}
 	}()
 	var (
-		src          = flag.String("src", ".", "code source")
-		srcin        = flag.Bool("srcin", false, "take source from standard in")
-		templatesrc  = flag.String("templatesrc", "", "template source")
-		template     = flag.String("template", "", "template verbatim")
-		names        = flag.String("name", "", "comma separated list of things to include")
-		packages     = flag.String("package", "", "comma separated list of packages to include")
-		interfaces   = flag.String("interface", "", "comma separated list of interfaces to include")
-		structs      = flag.String("struct", "", "comma separated list of structs to include")
-		funcs        = flag.String("func", "", "comma separated list of funcs to include")
-		out          = flag.String("out", "", "output file (defaults to standard out)")
-		timeout      = flag.Duration("timeout", 2*time.Second, "timeout for HTTP requests")
-		verbose      = flag.Bool("v", false, "verbose logging")
-		nolinefeed   = flag.Bool("n", false, "suppress final linefeed")
-		printVersion = flag.Bool("version", false, "print version and exit")
+		src           = flag.String("src", ".", "code source")
+		srcin         = flag.Bool("srcin", false, "take source from standard in")
+		templatesrc   = flag.String("templatesrc", "", "template source")
+		template      = flag.String("template", "", "template verbatim")
+		targetPackage = flag.String("pkg", "", "target package")
+		names         = flag.String("name", "", "comma separated list of things to include")
+		packages      = flag.String("package", "", "comma separated list of packages to include")
+		interfaces    = flag.String("interface", "", "comma separated list of interfaces to include")
+		structs       = flag.String("struct", "", "comma separated list of structs to include")
+		funcs         = flag.String("func", "", "comma separated list of funcs to include")
+		out           = flag.String("out", "", "output file (defaults to standard out)")
+		timeout       = flag.Duration("timeout", 2*time.Second, "timeout for HTTP requests")
+		verbose       = flag.Bool("v", false, "verbose logging")
+		nolinefeed    = flag.Bool("n", false, "suppress final linefeed")
+		printVersion  = flag.Bool("version", false, "print version and exit")
 	)
 	flag.Usage = func() {
 		fmt.Println("codeform", "v"+version.Current)
@@ -109,14 +110,15 @@ func main() {
 		w = os.Stdout
 	}
 	job := tool.Job{
-		Log:        log,
-		Code:       codeSource,
-		Template:   templateSource,
-		Names:      splitArgList(*names),
-		Packages:   splitArgList(*packages),
-		Interfaces: splitArgList(*interfaces),
-		Structs:    splitArgList(*structs),
-		Funcs:      splitArgList(*funcs),
+		Log:           log,
+		Code:          codeSource,
+		Template:      templateSource,
+		Names:         splitArgList(*names),
+		Packages:      splitArgList(*packages),
+		Interfaces:    splitArgList(*interfaces),
+		Structs:       splitArgList(*structs),
+		Funcs:         splitArgList(*funcs),
+		TargetPackage: *targetPackage,
 	}
 	err = job.Execute(w)
 	if err != nil {
