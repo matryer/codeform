@@ -40,6 +40,10 @@ type Import struct {
 type Struct struct {
 	// Name is the name of the struct.
 	Name string `json:"name"`
+	// Fullname is the full code name of the struct.
+	// It may be:
+	//     package.Struct
+	Fullname string `json:"fullname"`
 	// Methods are the functions that have this struct as
 	// its receiver.
 	Methods []Func `json:"methods"`
@@ -51,6 +55,10 @@ type Struct struct {
 type Interface struct {
 	// Name is the name of the interface.
 	Name string `json:"name"`
+	// Fullname is the full code name of the interface.
+	// It may be:
+	//     package.Interface
+	Fullname string `json:"fullname"`
 	// Methods is the methods that make up this
 	// interface.
 	Methods []Func `json:"methods"`
@@ -93,4 +101,8 @@ type Var struct {
 type Type struct {
 	// Name is the name of the type.
 	Name string `json:"name"`
+	// Fullname is the full code name of the type.
+	// It may be:
+	//     package.Interface
+	Fullname string `json:"fullname"`
 }

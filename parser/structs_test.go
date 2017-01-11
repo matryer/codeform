@@ -9,7 +9,9 @@ import (
 
 func TestStructs(t *testing.T) {
 	is := is.New(t)
-	code, err := New(source.MustLocal("./testdata/types")).Parse()
+	p := New(source.MustLocal("./testdata/types"))
+	p.TargetPackage = "another"
+	code, err := p.Parse()
 	is.NoErr(err) // Parse()
 	is.OK(code != nil)
 	is.Equal(len(code.Packages), 1) // should be one package
@@ -17,7 +19,9 @@ func TestStructs(t *testing.T) {
 
 	is.Equal(len(pkg.Structs), 4)
 	is.Equal(pkg.Structs[0].Name, "Struct1")
+	is.Equal(pkg.Structs[0].Fullname, "pkgname.Struct1")
 	is.Equal(pkg.Structs[1].Name, "Struct2")
+	is.Equal(pkg.Structs[1].Fullname, "pkgname.Struct2")
 
 	// fields
 	is.Equal(len(pkg.Structs[0].Fields), 0)

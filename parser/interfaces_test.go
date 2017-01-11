@@ -9,7 +9,9 @@ import (
 
 func TestInterfaces(t *testing.T) {
 	is := is.New(t)
-	code, err := New(source.MustLocal("./testdata/types")).Parse()
+	p := New(source.MustLocal("./testdata/types"))
+	p.TargetPackage = "another"
+	code, err := p.Parse()
 	is.NoErr(err) // Parse()
 	is.OK(code != nil)
 	is.Equal(len(code.Packages), 1) // should be one package
@@ -17,6 +19,7 @@ func TestInterfaces(t *testing.T) {
 
 	is.Equal(len(pkg.Interfaces), 3)
 	is.Equal(pkg.Interfaces[0].Name, "Interface1")
+	is.Equal(pkg.Interfaces[0].Fullname, "pkgname.Interface1")
 	is.Equal(len(pkg.Interfaces[0].Methods), 0)
 
 	is.Equal(pkg.Interfaces[1].Name, "Interface2")
