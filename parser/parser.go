@@ -173,14 +173,14 @@ func (p *Parser) parseGlobals(packageModel *model.Package, tpkg *types.Package) 
 			if err != nil {
 				return errors.Wrap(err, "parseInterface")
 			}
-			iface.Name = thing.Name()
+			iface.Name = types.TypeString(thing.Type(), p.qualifier)
 			packageModel.Interfaces = append(packageModel.Interfaces, *iface)
 		case *types.Struct:
 			structure, err := p.parseStruct(thing.Type(), val, tpkg)
 			if err != nil {
 				return errors.Wrap(err, "parseStruct")
 			}
-			structure.Name = thing.Name()
+			structure.Name = types.TypeString(thing.Type(), p.qualifier)
 			packageModel.Structs = append(packageModel.Structs, *structure)
 		default:
 			return fmt.Errorf("%T not supported", thing)
