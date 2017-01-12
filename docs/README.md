@@ -10,7 +10,7 @@ Welcome to Codeform, easy Go code generation using templates.
 
 # How it works
 
-Write [template](https://golang.org/pkg/text/template/) using the 
+Write [templates](https://golang.org/pkg/text/template/) using the 
 [simple data model](https://godoc.org/github.com/matryer/codeform/model)
 and use the `codeform` tool to generate code.
 
