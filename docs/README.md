@@ -2,11 +2,16 @@
 
 ---
 
+# Welcome
+
 Welcome to Codeform, easy Go code generation using templates. 
 
 * Familiar [Go templates](https://golang.org/pkg/text/template/)
 * [Simple data model](https://godoc.org/github.com/matryer/codeform/model)
 * [Online editor](http://editor.codeform.in) with live preview
+
+We are working towards a stable 1.0 release, but the project is entirely usable today.
+Please get involved.
 
 # How it works
 
