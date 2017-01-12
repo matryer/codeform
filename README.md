@@ -3,6 +3,8 @@ Go code generation framework.
 
 * Generate output from Go code using templates
 * Interact with a simple model (see [Model documentation](https://godoc.org/github.com/matryer/codeform/model))
+* Write templates using the [online editor](http://editor.codeform.in/) (with live preview)
+* Contribute to a [repository of shared templates](https://github.com/matryer/codeform-templates)
 
 ## Get started
 
