@@ -78,10 +78,10 @@ func (l *Lookup) Get(src string) (*Source, error) {
 
 	// handle special cases
 	if src == "default" {
-		src = "github.com/matryer/codeform/source/default/source.go"
+		src = "https://raw.githubusercontent.com/matryer/codeform/master/source/default/source.go"
 	}
 	if strings.HasPrefix(src, "template:") {
-		src = fmt.Sprintf("github.com/matryer/codeform-templates/%s.tpl", strings.TrimPrefix(src, "template:"))
+		src = fmt.Sprintf("https://raw.githubusercontent.com/matryer/codeform-templates/master/%s.tpl", strings.TrimPrefix(src, "template:"))
 	}
 
 	if s, err := tryLocal(l, src); err == nil {
