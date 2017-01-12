@@ -13,7 +13,7 @@ func TestInterfaces(t *testing.T) {
 	p.TargetPackage = "another"
 	code, err := p.Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1) // should be one package
 	pkg := code.Packages[0]
 

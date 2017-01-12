@@ -11,7 +11,7 @@ func TestConsts(t *testing.T) {
 	is := is.New(t)
 	code, err := New(source.MustLocal("./testdata/types")).Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1)
 	pkg := code.Packages[0]
 

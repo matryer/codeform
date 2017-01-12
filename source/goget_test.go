@@ -12,7 +12,7 @@ func TestGoGet(t *testing.T) {
 	repo, done, err := goget("github.com/matryer/drop-test/explicit")
 	is.NoErr(err) // goget
 	defer done()
-	is.OK(strings.HasSuffix(repo, "src/github.com/matryer/drop-test/explicit"))
+	is.True(strings.HasSuffix(repo, "src/github.com/matryer/drop-test/explicit"))
 }
 
 func TestSplit(t *testing.T) {

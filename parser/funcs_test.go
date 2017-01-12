@@ -11,7 +11,7 @@ func TestPackages(t *testing.T) {
 	is := is.New(t)
 	code, err := New(source.MustLocal("./testdata/packages")).Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 2)
 	for _, pkg := range code.Packages {
 		switch pkg.Name {
@@ -26,7 +26,7 @@ func TestFuncs(t *testing.T) {
 	is := is.New(t)
 	code, err := New(source.MustLocal("./testdata/types")).Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1) // should be one package
 	is.Equal(len(code.Packages[0].Funcs), 7)
 

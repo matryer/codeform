@@ -29,7 +29,7 @@ func TestReader(t *testing.T) {
 	is.Equal(s.Path, "verbatim.go")
 	b, err := ioutil.ReadAll(s)
 	is.NoErr(err)
-	is.OK(strings.Contains(string(b), `This is a verbatim source file.`))
+	is.True(strings.Contains(string(b), `This is a verbatim source file.`))
 }
 
 func TestLocal(t *testing.T) {
@@ -41,7 +41,7 @@ func TestLocal(t *testing.T) {
 	is.Equal(s.Path, "./testdata/source.go")
 	b, err := ioutil.ReadAll(s)
 	is.NoErr(err)
-	is.OK(strings.Contains(string(b), `This is a local source file.`))
+	is.True(strings.Contains(string(b), `This is a local source file.`))
 }
 
 func TestTemplate(t *testing.T) {
@@ -50,10 +50,10 @@ func TestTemplate(t *testing.T) {
 	is.NoErr(err)
 	defer s.Close()
 	is.Equal(s.IsDir, false)
-	is.OK(strings.HasSuffix(s.Path, "github.com/matryer/codeform-templates/inspect/packages.tpl"))
+	is.True(strings.HasSuffix(s.Path, "github.com/matryer/codeform-templates/inspect/packages.tpl"))
 	b, err := ioutil.ReadAll(s)
 	is.NoErr(err)
-	is.OK(strings.Contains(string(b), `{{range .Packages}}`))
+	is.True(strings.Contains(string(b), `{{range .Packages}}`))
 }
 
 func TestDefault(t *testing.T) {
@@ -62,10 +62,10 @@ func TestDefault(t *testing.T) {
 	is.NoErr(err)
 	defer s.Close()
 	is.Equal(s.IsDir, false)
-	is.OK(strings.HasSuffix(s.Path, "github.com/matryer/codeform/source/default/source.go"))
+	is.True(strings.HasSuffix(s.Path, "github.com/matryer/codeform/source/default/source.go"))
 	b, err := ioutil.ReadAll(s)
 	is.NoErr(err)
-	is.OK(strings.Contains(string(b), `package defaultsource`))
+	is.True(strings.Contains(string(b), `package defaultsource`))
 }
 
 func TestURL(t *testing.T) {
@@ -77,7 +77,7 @@ func TestURL(t *testing.T) {
 	is.Equal(s.Path, "https://raw.githubusercontent.com/matryer/drop-test/master/greet.go")
 	b, err := ioutil.ReadAll(s)
 	is.NoErr(err)
-	is.OK(strings.Contains(string(b), `func Greet(name string) string`))
+	is.True(strings.Contains(string(b), `func Greet(name string) string`))
 }
 
 func TestGoGet(t *testing.T) {
@@ -86,7 +86,7 @@ func TestGoGet(t *testing.T) {
 	is.NoErr(err)
 	defer s.Close()
 	is.Equal(s.IsDir, true)
-	is.OK(strings.HasSuffix(s.Path, `/src/github.com/matryer/drop-test/explicit`))
+	is.True(strings.HasSuffix(s.Path, `/src/github.com/matryer/drop-test/explicit`))
 }
 
 // TestGopath tests that the local GOPATH is checked.

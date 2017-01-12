@@ -14,7 +14,7 @@ func TestDifferentPackage(t *testing.T) {
 	p.TargetPackage = ""
 	code, err := p.Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1)
 	is.Equal(len(code.Packages[0].Funcs), 1)
 	is.Equal(len(code.Packages[0].Funcs[0].Args), 1)
@@ -27,7 +27,7 @@ func TestDifferentPackage(t *testing.T) {
 	p.TargetPackage = "github.com/matryer/codeform/parser/testdata/samepackage"
 	code, err = p.Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1)
 	is.Equal(len(code.Packages[0].Funcs), 1)
 	is.Equal(len(code.Packages[0].Funcs[0].Args), 1)
@@ -40,7 +40,7 @@ func TestDifferentPackage(t *testing.T) {
 	p.TargetPackage = "github.com/matryer/codeform/parser/testdata/otherpackage"
 	code, err = p.Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1)
 	is.Equal(len(code.Packages[0].Funcs), 1)
 	is.Equal(len(code.Packages[0].Funcs[0].Args), 1)
@@ -52,7 +52,7 @@ func TestDifferentPackage(t *testing.T) {
 	p.TargetPackage = "github.com/matryer/codeform/parser/testdata/otherpackage"
 	code, err = p.Parse()
 	is.NoErr(err) // Parse()
-	is.OK(code != nil)
+	is.True(code != nil)
 	is.Equal(len(code.Packages), 1)
 	is.Equal(len(code.Packages[0].Funcs), 1)
 	is.Equal(len(code.Packages[0].Funcs[0].Args), 1)

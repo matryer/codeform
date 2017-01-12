@@ -27,7 +27,7 @@ func TestRender(t *testing.T) {
 	actual := buf.String()
 	s := bufio.NewScanner(strings.NewReader(expected))
 	for s.Scan() {
-		is.OK(strings.Contains(actual, s.Text()))
+		is.True(strings.Contains(actual, s.Text()))
 	}
 }
 
