@@ -41,7 +41,7 @@ func goget(src string) (string, func(), error) {
 	//info("go get -d", source)
 	goget := exec.Command("go", "get", "-d", source)
 	env := []string{"GOPATH=" + gopath} // control GOPATH for this command
-	env = append(env, os.Environ()...)  // but use rest of normal environemnt
+	env = append(env, os.Environ()...)  // but use rest of normal environment
 	goget.Env = env
 
 	// Omit error, `go get -d ` exits with status 1 if the package is not buildable
