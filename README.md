@@ -1,4 +1,4 @@
-# codeform # silk [![Build Status](https://travis-ci.org/matryer/codeform.svg?branch=master)](https://travis-ci.org/matryer/codeform) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/codeform)](https://goreportcard.com/report/github.com/matryer/codeform)
+# codeform [![Build Status](https://travis-ci.org/matryer/codeform.svg?branch=master)](https://travis-ci.org/matryer/codeform) [![Go Report Card](https://goreportcard.com/badge/github.com/matryer/codeform)](https://goreportcard.com/report/github.com/matryer/codeform)
 Go code generation framework.
 
 * Generate output from Go code using templates
